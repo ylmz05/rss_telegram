@@ -1,0 +1,13 @@
+FROM mysql/mysql-server:5.7
+
+ARG ROOT_PASSWORD
+ARG DATABASE_NAME
+ARG USER
+ARG USER_PWD
+
+env MYSQL_DATABASE=$DATABASE_NAME
+env MYSQL_RANDOM_ROOT_PASSWORD="yes"
+env MYSQL_USER=$USER
+env MYSQL_PASSWORD=$USER_PWD
+
+ADD databaseScript.sql /docker-entrypoint-initdb.d

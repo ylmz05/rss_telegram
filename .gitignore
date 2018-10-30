@@ -1,0 +1,7 @@
+Rss/.env
+Rss/.dockerignore
+Rss/.vs
+/build
+obj
+bin
+Rss/Database/databaseScript.sql

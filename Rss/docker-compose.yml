@@ -1,0 +1,86 @@
+version: '3.4'
+
+networks:
+  default:
+    external:
+      name: ${EXTERNAL_NETWORK}
+      
+volumes:
+  localrss: 
+  
+services:
+  rss.messaging:
+    image: rssmessaging
+    build:
+      context: .
+      dockerfile: microservices/Rss.Messaging/Dockerfile
+    environment:
+      - "connectionString=Server=${DB_SERVER};Database=${DB_NAME};Uid=${DB_USER};Pwd=${DB_USER_PWD};"
+      - "rabbimqHost=${RABBITMQ_HOST}"
+      - "botToken=${DEFAULT_BOT_TOKEN}"
+      - "queueName=${RABBITMQ_QUEUE}"
+    depends_on:
+      - mysql
+      - rabbit
+
+  rss.reader:
+    image: rssreader
+    build:
+      context: .
+      dockerfile: microservices/Rss.Reader/Dockerfile
+    volumes:
+      - localrss:/build
+    environment:
+      - "connectionString=Server=${DB_SERVER};Database=${DB_NAME};Uid=${DB_USER};Pwd=${DB_USER_PWD};"
+      - "rabbimqHost=${RABBITMQ_HOST}"
+      - "queueName=${RABBITMQ_QUEUE}"
+    depends_on:
+      - mysql
+      - rabbit
+
+  rss.tlbotcommunication:
+    image: rsstlbotcommunication
+    build:
+      context: .
+      dockerfile: microservices/Rss.TLBotCommunication/Dockerfile
+    environment:
+      - "connectionString=Server=${DB_SERVER};Database=${DB_NAME};Uid=${DB_USER};Pwd=${DB_USER_PWD};"
+      - "botToken=${DEFAULT_BOT_TOKEN}"
+    depends_on:
+      - mysql
+
+  rss.writer:
+    image: rsswriter
+    build:
+      context: .
+      dockerfile: microservices/Rss.Writer/Dockerfile
+    volumes:
+      - localrss:/build
+      
+  rabbit:
+    image: rabbitmq:latest
+    hostname: ${RABBITMQ_HOST}
+    container_name: rabbit
+    ports:
+      - "15672:15672"
+      - "5671:5671"
+      - "15671:15671"
+      - "5672:5672"
+
+  mysql:
+    image: mysqlserver
+    hostname: ${DB_SERVER}
+    volumes:
+      - localrss:/var/lib/mysql
+    command: --disable-partition-engine-check
+    build:
+      context: ./Database
+      dockerfile: Dockerfile
+      args:
+        - DATABASE_NAME=${DB_NAME}
+        - USER=${DB_USER}
+        - USER_PWD=${DB_USER_PWD}
+    container_name: mysql
+    ports:
+      - "3306:3306"
+      - "33060:33060"
