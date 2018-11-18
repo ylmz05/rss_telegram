@@ -36,14 +36,24 @@ namespace Rss.Application.Aggregates.Classes.Queries
             return Response<IList<RssChatRelationEntity>>.Create(_queryRssChatRepo.GetList(), ResponseType.Success);
         }
 
-        public Response<IList<RssChatRelationEntity>> GetList(string name)
+        public Response<IList<RssChatRelationEntity>> GetList(string AliasName)
         {
-            return Response<IList<RssChatRelationEntity>>.Create(_queryRssChatRepo.GetList(name), ResponseType.Success);
+            return Response<IList<RssChatRelationEntity>>.Create(_queryRssChatRepo.GetList(AliasName), ResponseType.Success);
         }
 
         public Response<IList<RssChatRelationEntity>> GetList(long chatId)
         {
             return Response<IList<RssChatRelationEntity>>.Create(_queryRssChatRepo.GetList(chatId), ResponseType.Success);
+        }
+
+        public Response<IList<RssChatRelationEntity>> GetListByAliasName(long userId, string aliasName)
+        {
+            return Response<IList<RssChatRelationEntity>>.Create(_queryRssChatRepo.GetListByAliasName(userId, aliasName), ResponseType.Success);
+        }
+
+        public Response<IList<RssChatRelationEntity>> GetListByChatName(long userId, string chatName)
+        {
+            return Response<IList<RssChatRelationEntity>>.Create(_queryRssChatRepo.GetListByChatName(userId, chatName), ResponseType.Success);
         }
     }
 }

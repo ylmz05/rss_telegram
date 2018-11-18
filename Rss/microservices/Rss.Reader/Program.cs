@@ -10,7 +10,7 @@ namespace Rss.Reader
 
         static void Main(string[] args)
         {
-            Thread.Sleep(60000);
+            //Thread.Sleep(60000);
             App app = new App(_readerPlatform);
             app.StartContainer();
 

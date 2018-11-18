@@ -3,6 +3,7 @@ using Rss.Application.Aggregates.Interfaces.Queries;
 using Rss.Application.Services.Interfaces.Commands;
 using Rss.CDO.Response;
 using Rss.Domain.Entities;
+using System;
 
 namespace Rss.Application.Services.Classes.Commands
 {
@@ -19,14 +20,14 @@ namespace Rss.Application.Services.Classes.Commands
 
         public Response<int> Add(RssEntity input)
         {
-            Response<RssEntity> validation = _queryRssAggregate.Get(input.UserId, input.Url);
+            Response<RssEntity> validation = _queryRssAggregate.Get(input.UserId, input.AliasName);
             if (validation.ResponseData != null)
                 return Response<int>.Create(0, CDO.Enums.Response.ResponseType.AlreadyExist);
             return _commandRssAggregate.Add(input);
         }
         public Response<int> Remove(RssEntity input)
         {
-            Response<RssEntity> validation = _queryRssAggregate.Get(input.UserId, input.Url);
+            Response<RssEntity> validation = _queryRssAggregate.Get(Convert.ToInt32(input.AliasName));
             if (validation.ResponseData != null)
                 return _commandRssAggregate.Remove(validation.ResponseData);
             else return Response<int>.Create(0, CDO.Enums.Response.ResponseType.NotFound);

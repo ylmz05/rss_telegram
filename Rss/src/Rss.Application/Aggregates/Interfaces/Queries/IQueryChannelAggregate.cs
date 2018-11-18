@@ -10,5 +10,7 @@ namespace Rss.Application.Aggregates.Interfaces.Queries
         Response<ChannelEntity> Get(long userId, long chatId);
         Response<ChannelEntity> Get(long userId, string name);
         Response<IList<ChannelEntity>> GetList(ChatType type);
+        Response<IList<ChannelEntity>> GetList(long userId);
+        Response<IList<ChannelEntity>> GetList(long userId, ChatType type);
     }
 }

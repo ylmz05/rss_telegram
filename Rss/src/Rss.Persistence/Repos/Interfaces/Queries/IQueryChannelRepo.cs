@@ -9,5 +9,7 @@ namespace Rss.Persistence.Repos.Interfaces.Queries
         ChannelEntity Get(long userId, long chatId);
         ChannelEntity Get(long userId, string name);
         IList<ChannelEntity> GetList(int type);
+        IList<ChannelEntity> GetList(long userId);
+        IList<ChannelEntity> GetList(long userId, int chatType);
     }
 }

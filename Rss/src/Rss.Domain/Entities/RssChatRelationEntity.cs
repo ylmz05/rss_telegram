@@ -9,5 +9,6 @@ namespace Rss.Domain.Entities
         public string Url { get; set; }
         public long ChatId { get; set; }
         public string Name { get; set; }
+        public string AliasName { get; set; }
     }
 }

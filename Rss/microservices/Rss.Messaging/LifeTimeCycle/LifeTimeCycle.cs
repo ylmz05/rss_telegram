@@ -10,6 +10,8 @@ namespace Rss.Messaging.LifeTimeCycle
 {
     public class LifeTimeCycle
     {
+        public static long ExceptionChat { get; set; }
+
         private static readonly TelegramBotClient _telegramBotClient = new TelegramBotClient(Environment.GetEnvironmentVariable("botToken"));
         public static void Create(MessagingPlatform messagingPlatform)
         {
@@ -23,6 +25,7 @@ namespace Rss.Messaging.LifeTimeCycle
                     if (!string.IsNullOrEmpty(consumedMessage))
                     {
                         RabbitMQResponse response = RabbitMQResponse.Create(consumedMessage);
+                        ExceptionChat = response.Payload.ChatId;
                         _telegramBotClient.SendTextMessageAsync(response.Payload.ChatId, response.Payload.Message).GetAwaiter().GetResult();
                     }
                     GC.Collect();

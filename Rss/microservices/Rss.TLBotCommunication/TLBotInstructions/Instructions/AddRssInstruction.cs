@@ -1,4 +1,5 @@
-﻿using Rss.TLBotCommunication.TLBotInstructions.Helpers;
+﻿using Rss.CDO.Enums.TLBot;
+using Rss.TLBotCommunication.TLBotInstructions.Helpers;
 using Rss.TLBotCommunication.TLBotInstructions.Interfaces;
 using Telegram.Bot;
 using Telegram.Bot.Args;
@@ -16,7 +17,7 @@ namespace Rss.TLBotCommunication.TLBotInstructions.Instructions
         }
         public void Execute()
         {
-            SessionHelper.GetSession(_callbackQueryEventArgs.CallbackQuery.From.Id).CanMessageReceive = true;
+            SessionHelper.GetSession(_callbackQueryEventArgs.CallbackQuery.From.Id).InstructionId = NextInstruction.AddRss;
             _telegramBotClient.SendTextMessageAsync(_callbackQueryEventArgs.CallbackQuery.From.Id, "enter rss url.").GetAwaiter();
         }
     }

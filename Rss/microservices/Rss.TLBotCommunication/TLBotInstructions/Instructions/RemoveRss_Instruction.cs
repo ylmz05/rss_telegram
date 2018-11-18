@@ -25,7 +25,7 @@ namespace Rss.TLBotCommunication.TLBotInstructions.Instructions
         }
         public void Execute()
         {
-            Response<int> response = _commandRssService.Remove(new RssEntity() { UserId = _callbackQueryEventArgs.CallbackQuery.From.Id, Url = _callbackQueryEventArgs.CallbackQuery.Data.Substring(10, _callbackQueryEventArgs.CallbackQuery.Data.Length - 10) });
+            Response<int> response = _commandRssService.Remove(new RssEntity() { UserId = _callbackQueryEventArgs.CallbackQuery.From.Id, AliasName = _callbackQueryEventArgs.CallbackQuery.Data.Substring(10, _callbackQueryEventArgs.CallbackQuery.Data.Length - 10) });
             if (response.Type.Equals(ResponseType.NotFound))
                 _telegramBotClient.SendTextMessageAsync(_callbackQueryEventArgs.CallbackQuery.From.Id, "rss is not found.");
             else if (response.Type.Equals(ResponseType.Success))

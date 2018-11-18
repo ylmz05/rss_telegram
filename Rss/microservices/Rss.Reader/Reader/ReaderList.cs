@@ -35,12 +35,12 @@ namespace Rss.Reader.Reader
         }
         public static void GetLatestNews()
         {
-            Parallel.ForEach(RssList, rss => 
+            foreach (var rss in RssList.ToList())
             {
                 try
                 {
                     RssConnector rssConnector = new RssConnector(rss.Key, rss.Value);
-                    IEnumerable<SyndicationItem> items = rssConnector.GetLatestUpdates();
+                    IList<SyndicationItem> items = rssConnector.GetLatestUpdates();
 
                     foreach (SyndicationItem item in items)
                     {
@@ -54,7 +54,7 @@ namespace Rss.Reader.Reader
                 {
                     Console.WriteLine(ex);
                 }
-            });
+            }
         }
     }
 }

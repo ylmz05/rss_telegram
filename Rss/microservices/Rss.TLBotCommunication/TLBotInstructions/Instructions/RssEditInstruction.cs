@@ -18,11 +18,16 @@ namespace Rss.TLBotCommunication.TLBotInstructions.Instructions
         {
             InlineKeyboardButton[][] keyboardButtons = new InlineKeyboardButton[1][];
 
-            keyboardButtons[0] = new InlineKeyboardButton[] { InlineKeyboardButton.WithCallbackData("Channels"), InlineKeyboardButton.WithCallbackData("Groups"), InlineKeyboardButton.WithCallbackData("Rss") };
+            keyboardButtons[0] = new InlineKeyboardButton[] 
+            {
+                InlineKeyboardButton.WithCallbackData("Channels"),
+                InlineKeyboardButton.WithCallbackData("Groups"),
+                InlineKeyboardButton.WithCallbackData("Rss")
+            };
 
             _telegramBotClient.SendTextMessageAsync(
                 _messageEventArgs.Message.Chat.Id,
-                "List/Edit channels or groups or rss. Choose one of the below.",
+                "Manage your channels, groups and rss list.",
                 replyMarkup: new InlineKeyboardMarkup(keyboardButtons)).GetAwaiter();
         }
     }

@@ -7,15 +7,15 @@ namespace Rss.TLBotCommunication.TLBotInstructions.Instructions
     public class AddGroupInstruction : IInstruction
     {
         private readonly ITelegramBotClient _telegramBotClient;
-        private readonly MessageEventArgs _messageEventArgs;
-        public AddGroupInstruction(ITelegramBotClient telegramBotClient, MessageEventArgs messageEventArgs)
+        private readonly CallbackQueryEventArgs _callbackQueryEventArgs;
+        public AddGroupInstruction(ITelegramBotClient telegramBotClient, CallbackQueryEventArgs callbackQueryEventArgs)
         {
             _telegramBotClient = telegramBotClient;
-            _messageEventArgs = messageEventArgs;
+            _callbackQueryEventArgs = callbackQueryEventArgs;
         }
         public void Execute()
         {
-            _telegramBotClient.SendTextMessageAsync(_messageEventArgs.Message.Chat.Id, "simply, invite me to your group.").GetAwaiter();
+            _telegramBotClient.SendTextMessageAsync(_callbackQueryEventArgs.CallbackQuery.Message.Chat.Id, "simply, invite me to your group.").GetAwaiter();
         }
     }
 }

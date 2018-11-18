@@ -11,7 +11,7 @@ namespace Rss.Writer.Rss
 {
     public class RssFeedHelper
     {
-        private const string FILE_NAME = @"\localrss";
+        private const string FILE_NAME = "../rssfeed/localrss";
 
         static RssFeedHelper()
         {
@@ -27,20 +27,16 @@ namespace Rss.Writer.Rss
         }
         public static void CreateIfNotExists()
         {
-            string fullPath = string.Concat(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), FILE_NAME);
-
             SyndicationFeed feed = CreateRss20();
 
-            if (!File.Exists(fullPath))
+            if (!File.Exists(FILE_NAME))
             {
-                using (XmlWriter writer = XmlWriter.Create(fullPath))
+                using (XmlWriter writer = XmlWriter.Create(FILE_NAME))
                     feed.SaveAsRss20(writer);
             }
         }
         public static void Save(string title, string content)
         {
-            string fullPath = string.Concat(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), FILE_NAME);
-
             SyndicationFeed feed = Load();
             feed.Items = new List<SyndicationItem>(feed.Items.Take(29))
             {
@@ -53,21 +49,20 @@ namespace Rss.Writer.Rss
                 }
             };
 
-            using (XmlWriter writer = XmlWriter.Create(fullPath))
+            using (XmlWriter writer = XmlWriter.Create(FILE_NAME))
                 feed.SaveAsRss20(writer);
         }
         public static bool IsContentExists(string content)
         {
             SyndicationFeed feed = Load();
             if (string.IsNullOrEmpty(feed.Items.Select(x => ((TextSyndicationContent)x.Content).Text).Where(x => x.Equals(content)).FirstOrDefault()))
-                return false;
+                return true;
 
-            return true;
+            return false;
         }
         private static SyndicationFeed Load()
         {
-            string fullPath = string.Concat(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), FILE_NAME);
-            using (XmlReader reader = XmlReader.Create(fullPath))
+            using (XmlReader reader = XmlReader.Create(FILE_NAME))
                 return SyndicationFeed.Load(reader);
         }
     }

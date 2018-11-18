@@ -72,5 +72,41 @@ namespace Rss.Persistence.MySQL.Repos.Classes.Queries
 
             return input;
         }
+        public IList<ChannelEntity> GetList(long userId)
+        {
+            IList<ChannelEntity> input = null;
+
+            PredicateGroup predicateGroup = new PredicateGroup()
+            {
+                Operator = GroupOperator.And,
+                Predicates = new List<IPredicate>()
+            };
+
+            predicateGroup.Predicates.Add(Predicates.Field<ChannelEntity>(x => x.UserId, Operator.Eq, userId));
+
+            using (IDbConnection connection = new MySqlConnection(_connectionString))
+                input = connection.GetList<ChannelEntity>(predicateGroup).ToList();
+
+            return input;
+        }
+
+        public IList<ChannelEntity> GetList(long userId, int chatType)
+        {
+            IList<ChannelEntity> input = null;
+
+            PredicateGroup predicateGroup = new PredicateGroup()
+            {
+                Operator = GroupOperator.And,
+                Predicates = new List<IPredicate>()
+            };
+
+            predicateGroup.Predicates.Add(Predicates.Field<ChannelEntity>(x => x.UserId, Operator.Eq, userId));
+            predicateGroup.Predicates.Add(Predicates.Field<ChannelEntity>(x => x.Type, Operator.Eq, chatType));
+
+            using (IDbConnection connection = new MySqlConnection(_connectionString))
+                input = connection.GetList<ChannelEntity>(predicateGroup).ToList();
+
+            return input;
+        }
     }
 }

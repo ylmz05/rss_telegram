@@ -18,7 +18,7 @@ namespace Rss.Persistence.MySQL.Repos.Classes.Queries
             _connectionString = connectionString;
         }
 
-        public RssEntity Get(long userId, string url)
+        public RssEntity Get(long userId, string aliasName)
         {
             RssEntity input = null;
 
@@ -29,10 +29,27 @@ namespace Rss.Persistence.MySQL.Repos.Classes.Queries
             };
 
             predicateGroup.Predicates.Add(Predicates.Field<RssEntity>(x => x.UserId, Operator.Eq, userId));
-            predicateGroup.Predicates.Add(Predicates.Field<RssEntity>(x => x.Url, Operator.Eq, url));
+            predicateGroup.Predicates.Add(Predicates.Field<RssEntity>(x => x.AliasName, Operator.Eq, aliasName));
 
             using (IDbConnection connection = new MySqlConnection(_connectionString))
                 input = connection.GetList<RssEntity>(predicateGroup).FirstOrDefault();
+
+            return input;
+        }
+        public IList<RssEntity> GetList(long userId)
+        {
+            IList<RssEntity> input = null;
+
+            PredicateGroup predicateGroup = new PredicateGroup()
+            {
+                Operator = GroupOperator.And,
+                Predicates = new List<IPredicate>()
+            };
+
+            predicateGroup.Predicates.Add(Predicates.Field<RssEntity>(x => x.UserId, Operator.Eq, userId));
+
+            using (IDbConnection connection = new MySqlConnection(_connectionString))
+                input = connection.GetList<RssEntity>(predicateGroup).ToList();
 
             return input;
         }

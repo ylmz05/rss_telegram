@@ -1,5 +1,6 @@
 ﻿using Rss.Application.Services.Interfaces.Commands;
 using Rss.CDO.Enums.Response;
+using Rss.CDO.Enums.TLBot;
 using Rss.CDO.Response;
 using Rss.Domain.Entities;
 using Rss.Messaging.AppComponents;
@@ -28,28 +29,37 @@ namespace Rss.TLBotCommunication.TLBotInstructions.InstructionHandler
         {
             if (_updateEventArgs.Update.Type.Equals(UpdateType.ChannelPost))
             {
-                if (!_updateEventArgs.Update.ChannelPost.Text.Trim().Length.Equals(50))
-                    return;
+                Session session = SessionHelper.IsCodeExist(_updateEventArgs.Update.ChannelPost.Text);
 
-                string enteredCode = _updateEventArgs.Update.ChannelPost.Text;
-                TimerHelper.IsDataReceived = true;
-
-                if (!RandomCodeHelper.Validate(enteredCode))
-                    _telegramBotClient.SendTextMessageAsync(_updateEventArgs.Update.ChannelPost.Chat.Id, "wrong code is entered. try again.").GetAwaiter();
-                else
+                if (session != null && session.InstructionId.Equals(NextInstruction.WaitingCode))
                 {
-                    Session session = SessionHelper.IsCodeExist(enteredCode);
-
                     Response<int> response = _commandChannelService.Add(new ChannelEntity() { ChatId = _updateEventArgs.Update.ChannelPost.Chat.Id, Name = string.Concat(_updateEventArgs.Update.ChannelPost.Chat.Username, "/", _updateEventArgs.Update.ChannelPost.Chat.Title), UserId = session.UserId, Type = (short)CDO.Enums.Chat.ChatType.Channel });
                     if (response.Type.Equals(ResponseType.Success))
+                    {
                         _telegramBotClient.SendTextMessageAsync(_updateEventArgs.Update.ChannelPost.Chat.Id, "channel is added to list.").GetAwaiter();
+                        session.InstructionId = NextInstruction.CodeValidated;
+                        TimerHelper.DataReceived();
+                    }
                     else if (response.Type.Equals(ResponseType.AlreadyExist))
                         _telegramBotClient.SendTextMessageAsync(_updateEventArgs.Update.ChannelPost.Chat.Id, "channel is already exist in list.").GetAwaiter();
-
-                    else _telegramBotClient.SendTextMessageAsync(_updateEventArgs.Update.ChannelPost.Chat.Id, "channel is not added to list. User is not found in sessions").GetAwaiter();
-
-                    session.CanAddChannel = true;
+                    else
+                    {
+                        _telegramBotClient.SendTextMessageAsync(_updateEventArgs.Update.ChannelPost.Chat.Id, "channel is not added to list. User is not found.").GetAwaiter();
+                        session.InstructionId = NextInstruction.CodeNotValidated;
+                        TimerHelper.DataReceived();
+                    }
                 }
+                else if(session != null && !session.InstructionId.Equals(NextInstruction.WaitingCode))
+                {
+                    if (session.InstructionId.Equals(NextInstruction.CodeNotValidated))
+                        _telegramBotClient.SendTextMessageAsync(_updateEventArgs.Update.ChannelPost.Chat.Id, "code not validated. call Add Channel again. [SERVER_EXCEPTION]").GetAwaiter();
+                    else if (session.InstructionId.Equals(NextInstruction.CodeNotValidatedTimeOut))
+                        _telegramBotClient.SendTextMessageAsync(_updateEventArgs.Update.ChannelPost.Chat.Id, "code not validated. call Add Channel again. [TIMEOUT]").GetAwaiter();
+                    else if (session.InstructionId.Equals(NextInstruction.CodeValidated))
+                        _telegramBotClient.SendTextMessageAsync(_updateEventArgs.Update.ChannelPost.Chat.Id, "code is already used. please call Add Channel again.").GetAwaiter();
+                }
+                else
+                    _telegramBotClient.SendTextMessageAsync(_updateEventArgs.Update.ChannelPost.Chat.Id, "wrong code is entered. try again.").GetAwaiter();
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using Rss.Messaging.AppComponents;
+﻿using Rss.CDO.Enums.TLBot;
+using Rss.Messaging.AppComponents;
 using Rss.TLBotCommunication.TLBotInstructions.Helpers;
 using Rss.TLBotCommunication.TLBotInstructions.Instructions;
 using Rss.TLBotCommunication.TLBotInstructions.Interfaces;
@@ -22,7 +23,7 @@ namespace Rss.TLBotCommunication.TLBotInstructions.InstructionHandler
 
         public void Execute()
         {
-            SessionHelper.AddSession(new Session() { Name = _callbackQueryEventArgs.CallbackQuery.From.Username, UserId = _callbackQueryEventArgs.CallbackQuery.From.Id, PrivateChatId = _callbackQueryEventArgs.CallbackQuery.From.Id, CanAddChannel = true });
+            SessionHelper.AddSession(new Session() { InstructionId = NextInstruction.None, Name = _callbackQueryEventArgs.CallbackQuery.From.Username, UserId = _callbackQueryEventArgs.CallbackQuery.From.Id, PrivateChatId = _callbackQueryEventArgs.CallbackQuery.From.Id });
 
             switch (_callbackQueryEventArgs.CallbackQuery.Data)
             {
@@ -46,11 +47,19 @@ namespace Rss.TLBotCommunication.TLBotInstructions.InstructionHandler
                     IInstruction listChannelsInstruction = new ListChannelsInstruction(_telegramBotClient, _callbackQueryEventArgs, _botPlatform);
                     listChannelsInstruction.Execute();
                     break;
+                case "Add Channel":
+                    IInstruction addChannelsInstruction = new AddChannelInstruction(_telegramBotClient, _callbackQueryEventArgs);
+                    addChannelsInstruction.Execute();
+                    break;
                 case "List Rss":
                     IInstruction listRssInstruction = new ListRssInstruction(_telegramBotClient, _callbackQueryEventArgs, _botPlatform);
                     listRssInstruction.Execute();
                     break;
-                case "Main":
+                case "Add Group":
+                    IInstruction addGroupInstruction = new AddGroupInstruction(_telegramBotClient, _callbackQueryEventArgs);
+                    addGroupInstruction.Execute();
+                    break;
+                case "Back to Home":
                     IInstruction mainInstruction = new MainInstruction(_telegramBotClient, _callbackQueryEventArgs);
                     mainInstruction.Execute();
                     break;

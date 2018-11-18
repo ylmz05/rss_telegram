@@ -19,6 +19,7 @@ services:
       - "rabbimqHost=${RABBITMQ_HOST}"
       - "botToken=${DEFAULT_BOT_TOKEN}"
       - "queueName=${RABBITMQ_QUEUE}"
+    restart: always
     depends_on:
       - mysql
       - rabbit
@@ -29,11 +30,12 @@ services:
       context: .
       dockerfile: microservices/Rss.Reader/Dockerfile
     volumes:
-      - localrss:/build
+      - localrss:/rssfeed/
     environment:
       - "connectionString=Server=${DB_SERVER};Database=${DB_NAME};Uid=${DB_USER};Pwd=${DB_USER_PWD};"
       - "rabbimqHost=${RABBITMQ_HOST}"
       - "queueName=${RABBITMQ_QUEUE}"
+    restart: always
     depends_on:
       - mysql
       - rabbit
@@ -46,6 +48,7 @@ services:
     environment:
       - "connectionString=Server=${DB_SERVER};Database=${DB_NAME};Uid=${DB_USER};Pwd=${DB_USER_PWD};"
       - "botToken=${DEFAULT_BOT_TOKEN}"
+    restart: always
     depends_on:
       - mysql
 
@@ -55,7 +58,8 @@ services:
       context: .
       dockerfile: microservices/Rss.Writer/Dockerfile
     volumes:
-      - localrss:/build
+      - localrss:/rssfeed/
+    restart: always
       
   rabbit:
     image: rabbitmq:latest
@@ -66,6 +70,7 @@ services:
       - "5671:5671"
       - "15671:15671"
       - "5672:5672"
+    restart: always
 
   mysql:
     image: mysqlserver
@@ -81,6 +86,7 @@ services:
         - USER=${DB_USER}
         - USER_PWD=${DB_USER_PWD}
     container_name: mysql
+    restart: always
     ports:
       - "3306:3306"
       - "33060:33060"

@@ -9,5 +9,7 @@ namespace Rss.Application.Services.Interfaces.Queries
     public interface IQueryChannelService : IQueryService<ChannelEntity>
     {
         Response<IList<ChannelEntity>> GetList(ChatType type);
+        Response<IList<ChannelEntity>> GetList(long userId, ChatType type);
+        Response<IList<ChannelEntity>> GetList(long userId);
     }
 }

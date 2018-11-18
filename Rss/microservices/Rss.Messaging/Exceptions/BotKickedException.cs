@@ -18,7 +18,7 @@ namespace Rss.Messaging.Exceptions
                 IQueryRssChatRelationService queryRssChatRelationService = messagingPlatform.Resolve<IQueryRssChatRelationService>();
                 ICommandRssChatRelationService commandRssChatRelationService = messagingPlatform.Resolve<ICommandRssChatRelationService>();
 
-                Response<IList<RssChatRelationEntity>> response = queryRssChatRelationService.GetList(-1001419844651);
+                Response<IList<RssChatRelationEntity>> response = queryRssChatRelationService.GetList(LifeTimeCycle.LifeTimeCycle.ExceptionChat);
                 foreach (var item in response.ResponseData)
                     commandRssChatRelationService.Remove(item);
 

@@ -24,7 +24,14 @@ namespace Rss.Application.Services.Classes.Queries
         {
             return _queryChannelAggregate.GetList();
         }
-
+        public Response<IList<ChannelEntity>> GetList(long userId)
+        {
+            return _queryChannelAggregate.GetList(userId);
+        }
+        public Response<IList<ChannelEntity>> GetList(long userId, ChatType type)
+        {
+            return _queryChannelAggregate.GetList(userId, type);
+        }
         public Response<IList<ChannelEntity>> GetList(ChatType type)
         {
             return _queryChannelAggregate.GetList(type);

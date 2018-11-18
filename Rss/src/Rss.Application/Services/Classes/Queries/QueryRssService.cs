@@ -27,5 +27,9 @@ namespace Rss.Application.Services.Classes.Queries
         {
             return _queryRssAggregate.GetList();
         }
+        public Response<IList<RssEntity>> GetList(long userId)
+        {
+            return _queryRssAggregate.GetList(userId);
+        }
     }
 }

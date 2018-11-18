@@ -1,5 +1,7 @@
-﻿using Rss.TLBotCommunication.TLBotInstructions.Helpers;
+﻿using Rss.CDO.Enums.TLBot;
+using Rss.TLBotCommunication.TLBotInstructions.Helpers;
 using Rss.TLBotCommunication.TLBotInstructions.Interfaces;
+using Rss.TLBotCommunication.UserSession;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 
@@ -8,18 +10,22 @@ namespace Rss.TLBotCommunication.TLBotInstructions.Instructions
     public class AddChannelInstruction : IInstruction
     {
         private readonly ITelegramBotClient _telegramBotClient;
-        private readonly MessageEventArgs _messageEventArgs;
-        public AddChannelInstruction(ITelegramBotClient telegramBotClient, MessageEventArgs messageEventArgs)
+        private readonly CallbackQueryEventArgs _callbackQueryEventArgs;
+        public AddChannelInstruction(ITelegramBotClient telegramBotClient, CallbackQueryEventArgs callbackQueryEventArgs)
         {
             _telegramBotClient = telegramBotClient;
-            _messageEventArgs = messageEventArgs;
+            _callbackQueryEventArgs = callbackQueryEventArgs;
         }
         public void Execute()
         {
-            SessionHelper.GetSession(_messageEventArgs.Message.From.Id).Code = RandomCodeHelper.Produce(50);
-            SessionHelper.GetSession(_messageEventArgs.Message.From.Id).CanAddChannel = false;
-            _telegramBotClient.SendTextMessageAsync(_messageEventArgs.Message.Chat.Id, $"send below code as message from channel that contain me. code : {SessionHelper.GetSession(_messageEventArgs.Message.From.Id).Code}").GetAwaiter();
-            TimerHelper.WaitUserValidation(_telegramBotClient, _messageEventArgs.Message.From.Id, _messageEventArgs.Message.From.Id, "/addchannel");
+            Session session = SessionHelper.GetSession(_callbackQueryEventArgs.CallbackQuery.From.Id);
+            session.Code = RandomCodeHelper.Produce(50);
+            session.InstructionId = NextInstruction.WaitingCode;
+            _telegramBotClient.SendTextMessageAsync(_callbackQueryEventArgs.CallbackQuery.Message.Chat.Id, 
+                "firstly, you have to add me to your channel as administrator within only post message permission. " +
+                "after that forward the code as message to channel that contains me.").GetAwaiter();
+            _telegramBotClient.SendTextMessageAsync(_callbackQueryEventArgs.CallbackQuery.Message.Chat.Id, session.Code).GetAwaiter();
+            TimerHelper.WaitUserValidation(_telegramBotClient, _callbackQueryEventArgs.CallbackQuery.From.Id, _callbackQueryEventArgs.CallbackQuery.From.Id, "/addchannel");
         }
     }
 }

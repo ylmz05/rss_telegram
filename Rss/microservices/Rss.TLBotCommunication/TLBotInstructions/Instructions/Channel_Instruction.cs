@@ -4,6 +4,7 @@ using Rss.Domain.Entities;
 using Rss.Messaging.AppComponents;
 using Rss.TLBotCommunication.TLBotInstructions.Helpers;
 using Rss.TLBotCommunication.TLBotInstructions.Interfaces;
+using System;
 using System.Collections.Generic;
 using Telegram.Bot;
 using Telegram.Bot.Args;
@@ -25,22 +26,22 @@ namespace Rss.TLBotCommunication.TLBotInstructions.Instructions
 
         public void Execute()
         {
-            Response<IList<RssEntity>> rss = _queryRssService.GetList();
+            Response<IList<RssEntity>> rss = _queryRssService.GetList(_callbackQueryEventArgs.CallbackQuery.From.Id);
             InlineKeyboardButton[][] keyboardButtonsListrss = new InlineKeyboardButton[rss.ResponseData.Count + 1][];
             keyboardButtonsListrss = new InlineKeyboardButton[rss.ResponseData.Count + 1][];
 
             for (int i = 0; i < rss.ResponseData.Count; i++)
-                keyboardButtonsListrss[i] = new InlineKeyboardButton[] { InlineKeyboardButton.WithCallbackData(rss.ResponseData[i].Url, string.Concat("Add_Channel_Rss_", rss.ResponseData[i].Url)) };
+                keyboardButtonsListrss[i] = new InlineKeyboardButton[] { InlineKeyboardButton.WithCallbackData(rss.ResponseData[i].AliasName, string.Concat("Add_Channel_Rss_", rss.ResponseData[i].Id)) };
 
-            keyboardButtonsListrss[rss.ResponseData.Count] = new InlineKeyboardButton[] { InlineKeyboardButton.WithCallbackData("Main") };
+            keyboardButtonsListrss[rss.ResponseData.Count] = new InlineKeyboardButton[] { InlineKeyboardButton.WithCallbackData("Back to Home") };
 
             _telegramBotClient.EditMessageTextAsync(
             _callbackQueryEventArgs.CallbackQuery.From.Id,
             _callbackQueryEventArgs.CallbackQuery.Message.MessageId,
-            "in order to attach rss, choose one.",
+            "last step to attach rss to channel. Choose one of the below.",
             replyMarkup: new InlineKeyboardMarkup(keyboardButtonsListrss)).GetAwaiter();
 
-            SessionHelper.GetSession(_callbackQueryEventArgs.CallbackQuery.From.Id).Channel = _callbackQueryEventArgs.CallbackQuery.Data.Substring(8, _callbackQueryEventArgs.CallbackQuery.Data.Length - 8);
+            SessionHelper.GetSession(_callbackQueryEventArgs.CallbackQuery.From.Id).ChannelId = Convert.ToInt32(_callbackQueryEventArgs.CallbackQuery.Data.Substring(8, _callbackQueryEventArgs.CallbackQuery.Data.Length - 8));
         }
     }
 }

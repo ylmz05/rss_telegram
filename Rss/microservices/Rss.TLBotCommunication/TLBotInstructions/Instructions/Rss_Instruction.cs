@@ -25,14 +25,14 @@ namespace Rss.TLBotCommunication.TLBotInstructions.Instructions
 
         public void Execute()
         {
-            Response<IList<RssChatRelationEntity>> rss = _queryRssChatService.GetList(_callbackQueryEventArgs.CallbackQuery.Data.Substring(4, _callbackQueryEventArgs.CallbackQuery.Data.Length - 4));
+            Response<IList<RssChatRelationEntity>> rss = _queryRssChatService.GetList(_callbackQueryEventArgs.CallbackQuery.From.Id ,_callbackQueryEventArgs.CallbackQuery.Data.Substring(4, _callbackQueryEventArgs.CallbackQuery.Data.Length - 4), CDO.Enums.Chat.ListChatRelation.ByAliasName);
             InlineKeyboardButton[][] keyboardButtonsListrss = new InlineKeyboardButton[rss.ResponseData.Count + 1][];
             keyboardButtonsListrss = new InlineKeyboardButton[rss.ResponseData.Count + 1][];
 
             for (int i = 0; i < rss.ResponseData.Count; i++)
-                keyboardButtonsListrss[i] = new InlineKeyboardButton[] { InlineKeyboardButton.WithCallbackData(rss.ResponseData[i].Name, string.Concat("Remove_Rss_", rss.ResponseData[i].Name)) };
+                keyboardButtonsListrss[i] = new InlineKeyboardButton[] { InlineKeyboardButton.WithCallbackData(rss.ResponseData[i].Name, string.Concat("Remove_Rss_", rss.ResponseData[i].Id)) };
 
-            keyboardButtonsListrss[rss.ResponseData.Count] = new InlineKeyboardButton[] { InlineKeyboardButton.WithCallbackData("Main") };
+            keyboardButtonsListrss[rss.ResponseData.Count] = new InlineKeyboardButton[] { InlineKeyboardButton.WithCallbackData("Back to Home") };
 
             _telegramBotClient.EditMessageTextAsync(
             _callbackQueryEventArgs.CallbackQuery.From.Id,
@@ -40,7 +40,7 @@ namespace Rss.TLBotCommunication.TLBotInstructions.Instructions
             "in order to remove rss from channel or group, choose one.",
             replyMarkup: new InlineKeyboardMarkup(keyboardButtonsListrss)).GetAwaiter();
 
-            SessionHelper.GetSession(_callbackQueryEventArgs.CallbackQuery.From.Id).Url = _callbackQueryEventArgs.CallbackQuery.Data.Substring(4, _callbackQueryEventArgs.CallbackQuery.Data.Length - 4);
+            SessionHelper.GetSession(_callbackQueryEventArgs.CallbackQuery.From.Id).InstructionId = CDO.Enums.TLBot.NextInstruction.RemoveChannelGroupFromRss;
         }
     }
 }

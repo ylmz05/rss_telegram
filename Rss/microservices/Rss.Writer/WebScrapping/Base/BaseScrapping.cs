@@ -7,7 +7,15 @@ namespace Rss.Writer.WebScrapping.Base
     {
         public string ScrapUri(string uri, string focusedNode)
         {
-            return (new ScrapingBrowser()).NavigateToPage(new Uri(uri)).Html.SelectSingleNode(focusedNode).InnerText.Trim();
+            try
+            {
+                return (new ScrapingBrowser()).NavigateToPage(new Uri(uri)).Html.SelectSingleNode(focusedNode).InnerText.Trim();
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("error while scrapping text.");
+                return null;
+            }
         }
 
         public abstract string GetLatestUpdate();

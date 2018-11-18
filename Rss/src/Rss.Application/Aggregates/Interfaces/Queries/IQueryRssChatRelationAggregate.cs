@@ -8,7 +8,9 @@ namespace Rss.Application.Aggregates.Interfaces.Queries
     {
         Response<RssChatRelationEntity> Get(long userId, long chatId, string url);
         Response<RssChatRelationEntity> Get(long userId, string name, string url);
-        Response<IList<RssChatRelationEntity>> GetList(string name);
+        Response<IList<RssChatRelationEntity>> GetList(string aliasName);
+        Response<IList<RssChatRelationEntity>> GetListByAliasName(long userId, string name);
         Response<IList<RssChatRelationEntity>> GetList(long chatId);
+        Response<IList<RssChatRelationEntity>> GetListByChatName(long userId, string name);
     }
 }

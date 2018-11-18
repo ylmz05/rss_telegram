@@ -17,7 +17,7 @@ namespace Rss.Reader.LifeTimeCycle
 
                 while (true)
                 {
-                    Thread.Sleep(5000);
+                    Thread.Sleep(60000);
                     ReaderList.SyncList(readerPlatform);
                     ReaderList.GetLatestNews();
                     GC.Collect();

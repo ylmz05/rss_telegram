@@ -20,10 +20,15 @@ namespace Rss.Application.Aggregates.Classes.Queries
         {
             return Response<RssEntity>.Create(_queryRssRepo.Get(id), ResponseType.Success);
         }
-        public Response<RssEntity> Get(long userId, string url)
+        public Response<RssEntity> Get(long userId, string aliasName)
         {
-            return Response<RssEntity>.Create(_queryRssRepo.Get(userId, url), ResponseType.Success);
+            return Response<RssEntity>.Create(_queryRssRepo.Get(userId, aliasName), ResponseType.Success);
         }
+        public Response<IList<RssEntity>> GetList(long userId)
+        {
+            return Response<IList<RssEntity>>.Create(_queryRssRepo.GetList(userId), ResponseType.Success);
+        }
+
         public Response<IList<RssEntity>> GetList()
         {
             return Response<IList<RssEntity>>.Create(_queryRssRepo.GetList(), ResponseType.Success);

@@ -18,13 +18,18 @@ namespace Rss.TLBotCommunication.TLBotInstructions.Instructions
         public void Execute()
         {
             InlineKeyboardButton[][] keyboardButtonsChannels = new InlineKeyboardButton[2][];
-            keyboardButtonsChannels[0] = new InlineKeyboardButton[] { InlineKeyboardButton.WithCallbackData("List Channels"), InlineKeyboardButton.WithCallbackData("Remove Channel") };
-            keyboardButtonsChannels[1] = new InlineKeyboardButton[] { InlineKeyboardButton.WithCallbackData("Main") };
+            keyboardButtonsChannels[0] = new InlineKeyboardButton[] 
+            {
+                InlineKeyboardButton.WithCallbackData("List Channels"),
+                InlineKeyboardButton.WithCallbackData("Remove Channel"),
+                InlineKeyboardButton.WithCallbackData("Add Channel")
+            };
+            keyboardButtonsChannels[1] = new InlineKeyboardButton[] { InlineKeyboardButton.WithCallbackData("Back to Home") };
 
             _telegramBotClient.EditMessageTextAsync(
                 _callbackQueryEventArgs.CallbackQuery.From.Id,
                 _callbackQueryEventArgs.CallbackQuery.Message.MessageId,
-                "List/Edit channels.",
+                "to get updates from rss, you can add channels and attach rss to them.",
                 replyMarkup: new InlineKeyboardMarkup(keyboardButtonsChannels)).GetAwaiter();
         }
     }

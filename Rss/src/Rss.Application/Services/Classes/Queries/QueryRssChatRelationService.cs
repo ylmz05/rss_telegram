@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Rss.Application.Aggregates.Interfaces.Queries;
 using Rss.Application.Services.Interfaces.Queries;
+using Rss.CDO.Enums.Chat;
 using Rss.CDO.Response;
 using Rss.Domain.Entities;
 
@@ -24,14 +25,21 @@ namespace Rss.Application.Services.Classes.Queries
             return _queryQueryAggregate.GetList();
         }
 
-        public Response<IList<RssChatRelationEntity>> GetList(string chatName)
+        public Response<IList<RssChatRelationEntity>> GetList(string aliasName)
         {
-            return _queryQueryAggregate.GetList(chatName);
+            return _queryQueryAggregate.GetList(aliasName);
         }
 
         public Response<IList<RssChatRelationEntity>> GetList(long chatId)
         {
             return _queryQueryAggregate.GetList(chatId);
+        }
+
+        public Response<IList<RssChatRelationEntity>> GetList(long userId, string name, ListChatRelation type)
+        {
+            if (type.Equals(ListChatRelation.ByAliasName))
+                return _queryQueryAggregate.GetListByAliasName(userId, name);
+            else return _queryQueryAggregate.GetListByChatName(userId, name);
         }
     }
 }

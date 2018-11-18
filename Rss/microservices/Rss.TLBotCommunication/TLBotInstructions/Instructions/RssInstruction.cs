@@ -19,7 +19,7 @@ namespace Rss.TLBotCommunication.TLBotInstructions.Instructions
         {
             InlineKeyboardButton[][] keyboardButtonsRss = new InlineKeyboardButton[2][];
             keyboardButtonsRss[0] = new InlineKeyboardButton[] { InlineKeyboardButton.WithCallbackData("List Rss"), InlineKeyboardButton.WithCallbackData("Remove Rss"), InlineKeyboardButton.WithCallbackData("Add Rss") };
-            keyboardButtonsRss[1] = new InlineKeyboardButton[] { InlineKeyboardButton.WithCallbackData("Main") };
+            keyboardButtonsRss[1] = new InlineKeyboardButton[] { InlineKeyboardButton.WithCallbackData("Back to Home") };
 
             _telegramBotClient.EditMessageTextAsync(
                 _callbackQueryEventArgs.CallbackQuery.From.Id,

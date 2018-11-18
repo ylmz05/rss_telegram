@@ -1,4 +1,5 @@
-﻿using Rss.Messaging.AppComponents;
+﻿using Rss.CDO.Enums.TLBot;
+using Rss.Messaging.AppComponents;
 using Rss.TLBotCommunication.TLBotInstructions.Helpers;
 using Rss.TLBotCommunication.TLBotInstructions.Instructions;
 using Rss.TLBotCommunication.TLBotInstructions.Interfaces;
@@ -31,22 +32,26 @@ namespace Rss.TLBotCommunication.TLBotInstructions.InstructionHandler
             if (!_messageEventArgs.Message.Chat.Type.Equals(ChatType.Private))
                 return;
 
-            SessionHelper.AddSession(new Session() { Name = _messageEventArgs.Message.From.Username, UserId = _messageEventArgs.Message.From.Id, PrivateChatId = _messageEventArgs.Message.Chat.Id, CanAddChannel = true });
+            SessionHelper.AddSession(new Session() { InstructionId = NextInstruction.None, Name = _messageEventArgs.Message.From.Username, UserId = _messageEventArgs.Message.From.Id, PrivateChatId = _messageEventArgs.Message.Chat.Id });
 
             switch (_messageEventArgs.Message.Text.Trim().Replace("@RssServiceBot", ""))
             {
-                case "/addchannel":
-                    if (SessionHelper.GetSession(_messageEventArgs.Message.From.Id).CanAddChannel)
-                    {
-                        IInstruction addChannelInstruction = new AddChannelInstruction(_telegramBotClient, _messageEventArgs);
-                        addChannelInstruction.Execute();
-                    }
-                    break;
-                case "/addgroup":
-                    IInstruction addGroupInstruction = new AddGroupInstruction(_telegramBotClient, _messageEventArgs);
-                    addGroupInstruction.Execute();
-                    break;
-                case "/rssedit":
+                //case "/addchannel":
+                //    if (SessionHelper.GetSession(_messageEventArgs.Message.From.Id).CanAddChannel)
+                //    {
+                //        IInstruction addChannelInstruction = new AddChannelInstruction(_telegramBotClient, _messageEventArgs);
+                //        addChannelInstruction.Execute();
+                //    }
+                //    break;
+                //case "/addgroup":
+                //    IInstruction addGroupInstruction = new AddGroupInstruction(_telegramBotClient, _messageEventArgs);
+                //    addGroupInstruction.Execute();
+                //    break;
+                //case "/rssedit":
+                //    IInstruction rssEditInstruction = new RssEditInstruction(_telegramBotClient, _messageEventArgs);
+                //    rssEditInstruction.Execute();
+                //    break;
+                case "/start":
                     IInstruction rssEditInstruction = new RssEditInstruction(_telegramBotClient, _messageEventArgs);
                     rssEditInstruction.Execute();
                     break;

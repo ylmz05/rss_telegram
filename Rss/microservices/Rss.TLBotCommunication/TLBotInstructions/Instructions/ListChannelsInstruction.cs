@@ -15,28 +15,33 @@ namespace Rss.TLBotCommunication.TLBotInstructions.Instructions
         private readonly ITelegramBotClient _telegramBotClient;
         private readonly CallbackQueryEventArgs _callbackQueryEventArgs;
         private readonly IQueryChannelService _queryChannelService;
+        private readonly IQueryRssChatRelationService _queryRssChatService;
         public ListChannelsInstruction(ITelegramBotClient telegramBotClient, CallbackQueryEventArgs callbackQueryEventArgs, BotPlatform botPlatform)
         {
             _telegramBotClient = telegramBotClient;
             _callbackQueryEventArgs = callbackQueryEventArgs;
             _queryChannelService = botPlatform.Resolve<IQueryChannelService>();
+            _queryRssChatService = botPlatform.Resolve<IQueryRssChatRelationService>();
         }
 
         public void Execute()
         {
-            Response<IList<ChannelEntity>> channels = _queryChannelService.GetList(CDO.Enums.Chat.ChatType.Channel);
+            Response<IList<ChannelEntity>> channels = _queryChannelService.GetList(_callbackQueryEventArgs.CallbackQuery.From.Id, CDO.Enums.Chat.ChatType.Channel);
             InlineKeyboardButton[][] keyboardButtonsListChannels = new InlineKeyboardButton[channels.ResponseData.Count + 1][];
             keyboardButtonsListChannels = new InlineKeyboardButton[channels.ResponseData.Count + 1][];
 
             for (int i = 0; i < channels.ResponseData.Count; i++)
-                keyboardButtonsListChannels[i] = new InlineKeyboardButton[] { InlineKeyboardButton.WithCallbackData(channels.ResponseData[i].Name, string.Concat("Channel_", channels.ResponseData[i].Name)) };
+            {
+                int count = _queryRssChatService.GetList(_callbackQueryEventArgs.CallbackQuery.From.Id, channels.ResponseData[i].Name, CDO.Enums.Chat.ListChatRelation.ByChatName).ResponseData.Count;
+                keyboardButtonsListChannels[i] = new InlineKeyboardButton[] { InlineKeyboardButton.WithCallbackData(string.Concat(channels.ResponseData[i].Name," (", count, ")"), string.Concat("Channel_", channels.ResponseData[i].Id)) };
+            }
 
-            keyboardButtonsListChannels[channels.ResponseData.Count] = new InlineKeyboardButton[] { InlineKeyboardButton.WithCallbackData("Main") };
+            keyboardButtonsListChannels[channels.ResponseData.Count] = new InlineKeyboardButton[] { InlineKeyboardButton.WithCallbackData("Back to Home") };
 
             _telegramBotClient.EditMessageTextAsync(
             _callbackQueryEventArgs.CallbackQuery.From.Id,
             _callbackQueryEventArgs.CallbackQuery.Message.MessageId,
-            "to add rss to channel choose one.",
+            "you can attach rss to selected channel from rss list.",
             replyMarkup: new InlineKeyboardMarkup(keyboardButtonsListChannels)).GetAwaiter();
         }
     }

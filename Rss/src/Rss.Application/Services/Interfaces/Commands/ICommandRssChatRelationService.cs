@@ -6,7 +6,7 @@ namespace Rss.Application.Services.Interfaces.Commands
 {
     public interface ICommandRssChatRelationService : ICommandService<RssChatRelationEntity>
     {
-        Response<int> Add(RssChatRelationEntity input, string url);
+        Response<int> Add(RssChatRelationEntity input, string channelName);
 
         Response<int> Remove(long userId, string name, string url);
     }

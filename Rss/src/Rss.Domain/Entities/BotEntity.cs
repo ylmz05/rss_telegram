@@ -1,4 +1,6 @@
-﻿namespace Rss.Domain.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Rss.Domain.Entities
 {
     public class BotEntity
     {

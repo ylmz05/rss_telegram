@@ -7,8 +7,9 @@ namespace Rss.Persistence.Repos.Interfaces.Queries
     {
         RssChatRelationEntity Get(long userId, long chatId, string url);
         RssChatRelationEntity Get(long userId, string name, string url);
-        IList<RssChatRelationEntity> GetList(string name);
+        IList<RssChatRelationEntity> GetList(string aliasName);
+        IList<RssChatRelationEntity> GetListByAliasName(long userId, string aliasName);
         IList<RssChatRelationEntity> GetList(long chatId);
-
+        IList<RssChatRelationEntity> GetListByChatName(long userId, string chatName);
     }
 }

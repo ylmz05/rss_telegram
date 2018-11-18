@@ -1,8 +1,11 @@
 ﻿using Rss.Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.ServiceModel.Syndication;
+using System.Text;
 using System.Xml;
 
 namespace Rss.Reader.Reader
@@ -17,19 +20,19 @@ namespace Rss.Reader.Reader
             _publishedDate = publishedDate;
         }
 
-        public IEnumerable<SyndicationItem> GetLatestUpdates()
+        public IList<SyndicationItem> GetLatestUpdates()
         {
             try
             {
                 using (XmlReader reader = XmlReader.Create(_rss.Url))
                 {
                     var items = SyndicationFeed.Load(reader);
-                    return items.Items.Where(x => x.PublishDate > _publishedDate);
+                    return items.Items.Where(x => x.PublishDate > _publishedDate).ToList();
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(string.Concat("\nError: ", ex.Message, "\nUri: ", _rss.Url));
                 return new List<SyndicationItem>();
             }
         }

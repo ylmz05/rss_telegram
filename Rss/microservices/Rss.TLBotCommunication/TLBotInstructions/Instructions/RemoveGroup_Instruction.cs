@@ -4,9 +4,6 @@ using Rss.CDO.Response;
 using Rss.Domain.Entities;
 using Rss.Messaging.AppComponents;
 using Rss.TLBotCommunication.TLBotInstructions.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 

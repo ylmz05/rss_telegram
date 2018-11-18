@@ -19,7 +19,7 @@ namespace Rss.Writer.LifeTimeCycle
                     Thread.Sleep(3000);
 
                     string latestNews = bloomberght.GetLatestUpdate();
-                    if (RssFeedHelper.IsContentExists(latestNews))
+                    if (RssFeedHelper.IsContentExists(latestNews) && !string.IsNullOrEmpty(latestNews))
                         RssFeedHelper.Save("ty-scrap-news", latestNews);
 
                     GC.Collect();
