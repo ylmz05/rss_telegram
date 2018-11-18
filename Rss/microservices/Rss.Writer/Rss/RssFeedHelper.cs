@@ -11,27 +11,36 @@ namespace Rss.Writer.Rss
 {
     public class RssFeedHelper
     {
-        private const string FILE_NAME = "../rssfeed/localrss";
+        private const string FILE_NAME_ECONOMY = "../rssfeed/localrss";
+        private const string FILE_NAME_BUGREPORT = "../rssfeed/bugreport";
 
         static RssFeedHelper()
         {
             CreateIfNotExists();
         }
 
-        public static SyndicationFeed CreateRss20()
+        public static SyndicationFeed CreateRss20(string category)
         {
             SyndicationFeed feed = new SyndicationFeed();
             feed.Authors.Add(new SyndicationPerson("tunahan.yilmaz94@gmail.com"));
-            feed.Categories.Add(new SyndicationCategory("economy news"));
+            feed.Categories.Add(new SyndicationCategory(category));
             return feed;
         }
         public static void CreateIfNotExists()
         {
-            SyndicationFeed feed = CreateRss20();
+            SyndicationFeed feed = CreateRss20("economy news");
 
-            if (!File.Exists(FILE_NAME))
+            if (!File.Exists(FILE_NAME_ECONOMY))
             {
-                using (XmlWriter writer = XmlWriter.Create(FILE_NAME))
+                using (XmlWriter writer = XmlWriter.Create(FILE_NAME_ECONOMY))
+                    feed.SaveAsRss20(writer);
+            }
+
+            feed = CreateRss20("bug report");
+
+            if (!File.Exists(FILE_NAME_BUGREPORT))
+            {
+                using (XmlWriter writer = XmlWriter.Create(FILE_NAME_BUGREPORT))
                     feed.SaveAsRss20(writer);
             }
         }
@@ -49,7 +58,25 @@ namespace Rss.Writer.Rss
                 }
             };
 
-            using (XmlWriter writer = XmlWriter.Create(FILE_NAME))
+            using (XmlWriter writer = XmlWriter.Create(FILE_NAME_ECONOMY))
+                feed.SaveAsRss20(writer);
+        }
+
+        public static void SaveBugReport(string title, string content)
+        {
+            SyndicationFeed feed = Load();
+            feed.Items = new List<SyndicationItem>(feed.Items.Take(29))
+            {
+                new SyndicationItem()
+                {
+                    PublishDate = DateTime.Now,
+                    Title = new TextSyndicationContent(title),
+                    Summary = new TextSyndicationContent("bugreport"),
+                    Content = SyndicationContent.CreatePlaintextContent(content)
+                }
+            };
+            
+            using (XmlWriter writer = XmlWriter.Create(FILE_NAME_BUGREPORT))
                 feed.SaveAsRss20(writer);
         }
         public static bool IsContentExists(string content)
@@ -62,7 +89,7 @@ namespace Rss.Writer.Rss
         }
         private static SyndicationFeed Load()
         {
-            using (XmlReader reader = XmlReader.Create(FILE_NAME))
+            using (XmlReader reader = XmlReader.Create(FILE_NAME_ECONOMY))
                 return SyndicationFeed.Load(reader);
         }
     }

@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Rss.Container\Rss.Container.csproj" />
+    <ProjectReference Include="..\Rss.Writer\Rss.Writer.csproj" />
   </ItemGroup>
 
 </Project>

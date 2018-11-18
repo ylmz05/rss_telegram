@@ -11,6 +11,7 @@
         CodeValidated = 5,
         CodeNotValidated = 6,
         CodeNotValidatedTimeOut = 7,
-        RemoveChannelGroupFromRss = 8
+        RemoveChannelGroupFromRss = 8,
+        BugReport = 9,
     }
 }

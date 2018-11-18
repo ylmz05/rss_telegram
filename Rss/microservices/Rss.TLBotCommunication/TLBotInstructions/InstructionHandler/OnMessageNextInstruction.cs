@@ -34,26 +34,15 @@ namespace Rss.TLBotCommunication.TLBotInstructions.InstructionHandler
 
             SessionHelper.AddSession(new Session() { InstructionId = NextInstruction.None, Name = _messageEventArgs.Message.From.Username, UserId = _messageEventArgs.Message.From.Id, PrivateChatId = _messageEventArgs.Message.Chat.Id });
 
-            switch (_messageEventArgs.Message.Text.Trim().Replace("@RssServiceBot", ""))
+            switch (_messageEventArgs.Message.Text.Trim().Replace("@RssServiceBot", string.Empty))
             {
-                //case "/addchannel":
-                //    if (SessionHelper.GetSession(_messageEventArgs.Message.From.Id).CanAddChannel)
-                //    {
-                //        IInstruction addChannelInstruction = new AddChannelInstruction(_telegramBotClient, _messageEventArgs);
-                //        addChannelInstruction.Execute();
-                //    }
-                //    break;
-                //case "/addgroup":
-                //    IInstruction addGroupInstruction = new AddGroupInstruction(_telegramBotClient, _messageEventArgs);
-                //    addGroupInstruction.Execute();
-                //    break;
-                //case "/rssedit":
-                //    IInstruction rssEditInstruction = new RssEditInstruction(_telegramBotClient, _messageEventArgs);
-                //    rssEditInstruction.Execute();
-                //    break;
                 case "/start":
                     IInstruction rssEditInstruction = new RssEditInstruction(_telegramBotClient, _messageEventArgs);
                     rssEditInstruction.Execute();
+                    break;
+                case "/bugreport":
+                    IInstruction bugReportInstruction = new BugReportInstruction(_telegramBotClient, _messageEventArgs);
+                    bugReportInstruction.Execute();
                     break;
                 default:
                     IInstruction defaultInstruction = new DefaultInstruction(_telegramBotClient, _messageEventArgs, _botPlatform);

@@ -8,6 +8,7 @@ using Rss.Messaging.AppComponents;
 using Rss.TLBotCommunication.TLBotInstructions.Helpers;
 using Rss.TLBotCommunication.TLBotInstructions.Interfaces;
 using Rss.TLBotCommunication.UserSession;
+using Rss.Writer.Rss;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 
@@ -60,6 +61,12 @@ namespace Rss.TLBotCommunication.TLBotInstructions.Instructions
                 else if (response.Type.Equals(ResponseType.AlreadyExist))
                     _telegramBotClient.SendTextMessageAsync(_messageEventArgs.Message.Chat.Id, "alias name is already exist. please enter unique name").GetAwaiter();
 
+            }
+            else if (session.InstructionId.Equals(NextInstruction.BugReport))
+            {
+                RssFeedHelper.SaveBugReport($"bug from {_messageEventArgs.Message.Chat.Id}", _messageEventArgs.Message.Text);
+                _telegramBotClient.SendTextMessageAsync(_messageEventArgs.Message.Chat.Id, "thank you for your report.").GetAwaiter();
+                session.InstructionId = NextInstruction.None;
             }
         }
     }
