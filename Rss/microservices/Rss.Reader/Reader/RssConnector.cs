@@ -12,9 +12,9 @@ namespace Rss.Reader.Reader
 {
     public class RssConnector
     {
-        private readonly RssChatRelationEntity _rss;
+        private readonly string _rss;
         private readonly DateTimeOffset _publishedDate;
-        public RssConnector(RssChatRelationEntity rss, DateTimeOffset publishedDate)
+        public RssConnector(string rss, DateTimeOffset publishedDate)
         {
             _rss = rss;
             _publishedDate = publishedDate;
@@ -24,7 +24,7 @@ namespace Rss.Reader.Reader
         {
             try
             {
-                using (XmlReader reader = XmlReader.Create(_rss.Url))
+                using (XmlReader reader = XmlReader.Create(_rss))
                 {
                     var items = SyndicationFeed.Load(reader);
                     return items.Items.Where(x => x.PublishDate > _publishedDate).ToList();
@@ -32,7 +32,7 @@ namespace Rss.Reader.Reader
             }
             catch (Exception ex)
             {
-                Console.WriteLine(string.Concat("\nError: ", ex.Message, "\nUri: ", _rss.Url));
+                Console.WriteLine(string.Concat("Error: ", ex.Message, "\nUri: ", _rss));
                 return new List<SyndicationItem>();
             }
         }
